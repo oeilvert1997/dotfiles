@@ -1,0 +1,35 @@
+shell = "zsh"
+
+[templates]
+defer = """
+{{ hooks?.pre | nl }}
+{% for file in files %}
+zsh-defer source "{{ file }}"
+{% endfor %}
+{{ hooks?.post | nl }}
+"""
+
+[plugins]
+
+[plugins.zsh-defer]
+github = "romkatv/zsh-defer"
+defer = false
+
+[plugins.zsh-completions]
+github = "zsh-users/zsh-completions"
+defer = false
+
+[plugins.compinit]
+inline = """
+mkdir -p "${XDG_CACHE_HOME}/zsh"
+autoload -Uz compinit
+zsh-defer compinit -d "${XDG_CACHE_HOME}/zsh/zcompdump-${HOST}-${ZSH_VERSION}"
+"""
+
+[plugins.zsh-autosuggestions]
+github = "zsh-users/zsh-autosuggestions"
+defer = true
+
+[plugins.fast-syntax-highlighting]
+github = "zdharma-continuum/fast-syntax-highlighting"
+defer= true
