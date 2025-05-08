@@ -1,0 +1,47 @@
+shell = "zsh"
+
+[templates]
+defer = """
+{{ hooks?.pre | nl }}
+{% for file in files %}
+zsh-defer source "{{ file }}"
+{% endfor %}
+{{ hooks?.post | nl }}
+"""
+
+[plugins]
+
+[plugins.zsh-defer]
+github = "romkatv/zsh-defer"
+apply = ["source"]
+
+[plugins.powerlevel10k]
+github = "romkatv/powerlevel10k"
+use = ["{{ name }}.zsh-theme"]
+hooks.pre = """
+if [ ! -f "${ZDOTDIR}/p10k.zsh" ]; then
+  cp "${XDG_DATA_HOME}/sheldon/repos/github.com/romkatv/powerlevel10k/config/p10k-lean.zsh" \
+    "${ZDOTDIR}/p10k.zsh"
+fi
+source "${ZDOTDIR}/p10k.zsh"
+"""
+apply = ["source"]
+
+[plugins.zsh-completions]
+github = "zsh-users/zsh-completions"
+apply = ["source"]
+
+[plugins.compinit]
+inline = """
+mkdir -p "${XDG_CACHE_HOME}/zsh"
+autoload -Uz compinit
+zsh-defer compinit -d "${XDG_CACHE_HOME}/zsh/zcompdump-${HOST}-${ZSH_VERSION}"
+"""
+
+[plugins.zsh-autosuggestions]
+github = "zsh-users/zsh-autosuggestions"
+apply = ["defer"]
+
+[plugins.fast-syntax-highlighting]
+github = "zdharma-continuum/fast-syntax-highlighting"
+apply = ["defer"]
